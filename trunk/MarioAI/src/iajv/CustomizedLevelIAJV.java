@@ -6,6 +6,7 @@ import java.util.Random;
 import dk.itu.mario.MarioInterface.Constraints;
 import dk.itu.mario.MarioInterface.GamePlay;
 import dk.itu.mario.MarioInterface.LevelInterface;
+import dk.itu.mario.engine.sprites.Enemy;
 import dk.itu.mario.engine.sprites.SpriteTemplate;
 import dk.itu.mario.level.Level;
 
@@ -16,16 +17,19 @@ public class CustomizedLevelIAJV extends Level implements LevelInterface {
 	private double CHANCE_END_HILL = 0.15;
 	private double CHANCE_HEIGHT_CHANGE = 0.1;
 	private double CHANCE_PIPE = 0.05;
-	private double CHANCE_ENEMY = 0.25;
+	private double CHANCE_ENEMY = 0.15;
 	private double CHANCE_WINGED = 0.05;
+	private double CHANCE_ARMOREDTURTLE = 0.3;
+	private double CHANCE_JUMPFLOWER = 0;
+	private double CHANCE_CHOMPFLOWER = 0;
 	private double CHANCE_BLOCK = 0.1;
-	private double CHANCE_END_BLOCK = 0.1;
+	private double CHANCE_END_BLOCK = 0.2;
 	private double CHANCE_COIN = 0.05;
 	private double CHANCE_END_COIN = 0.25;
-	private double CHANCE_BLOCK_POWER_UP = 0.1;
-	private double CHANCE_BLOCK_COIN = 0.3;
+	private double CHANCE_BLOCK_POWER_UP = 0.05;
+	private double CHANCE_BLOCK_COIN = 0.2;
 	 
-	private int GROUND_MAX_HEIGHT = 7;
+	private int GROUND_MAX_HEIGHT = 9;
 	private int GROUND_MIN_LENGTH = 3;
 	private int GROUND_OFFSET = 5;
 	private int GAP_MAX_LENGTH = 5;
@@ -33,8 +37,15 @@ public class CustomizedLevelIAJV extends Level implements LevelInterface {
 	private double HILL_MAX_HEIGHT = 5;	 
 	private double HILL_OFFSET = 6;	 
 	private int HILL_MIN_LENGTH = 3;
-	private int COIN_OFFSET = 3;
+	private int COIN_OFFSET = 4;
 	private int BLOCK_OFFSET = 4;
+	
+	private int EASY = 0;
+	private int MODERATE = 1;
+	private int HARD = 2;
+	private int SPEED = 3;
+	private int COLLECTOR = 4;
+	private int BLOCK_LOVER = 5;
 	 
 	private Random random;
 	
@@ -48,7 +59,6 @@ public class CustomizedLevelIAJV extends Level implements LevelInterface {
     private GamePlay playerM;
     
     private ArrayList<Integer> ground;
-    private ArrayList<Integer> blocks;
 
     private int minX;
     private int maxX;
@@ -63,14 +73,13 @@ public class CustomizedLevelIAJV extends Level implements LevelInterface {
 		this.difficulty = difficulty;
 		this.type = type;
 		this.playerM = playerMetrics;
-		
+
 		random = new Random(seed);        
         
         configureParameters();
         
         // keeps track of the ground height
         ground = new ArrayList<Integer>();
-        blocks = new ArrayList<Integer>();
 		
         // select the starting ground height
         minX = 4;
@@ -82,16 +91,99 @@ public class CustomizedLevelIAJV extends Level implements LevelInterface {
 	}
 	
 	public void configureParameters() {
+		System.out.println("ArmoredTurtlesKilled " + playerM.ArmoredTurtlesKilled);
+		System.out.println("CompletionTime " + playerM.completionTime);
+		System.out.println("CoinBlocksDestroyed " + playerM.coinBlocksDestroyed);
+		System.out.println("GoombasKilled " + playerM.GoombasKilled);
+		System.out.println("GreenTurtlesKilled " + playerM.GreenTurtlesKilled);
+		System.out.println("JumpsNumber " + playerM.jumpsNumber);
+		System.out.println("PercentageBlocksDestroyed " + playerM.percentageBlocksDestroyed);
+		System.out.println("PercentageCoinBlocksDestroyed " + playerM.percentageCoinBlocksDestroyed);
+		System.out.println("PercentageEmptyBlockesDestroyed " + playerM.percentageEmptyBlockesDestroyed);
+		System.out.println("PercentagePowerBlockDestroyed " + playerM.percentagePowerBlockDestroyed);
+		System.out.println("TimeRunningLeft " + playerM.timeRunningLeft);
+		System.out.println("TimeRunningRight " + playerM.timeRunningRight);
+		System.out.println("TimesOfDeathByArmoredTurtle " + playerM.timesOfDeathByArmoredTurtle);
+		System.out.println("TimesOfDeathByCannonBall " + playerM.timesOfDeathByCannonBall);
+		System.out.println("TimesOfDeathByJumpFlower " + playerM.timesOfDeathByJumpFlower);
+		System.out.println("TimesOfDeathByChompFlower " + playerM.timesOfDeathByChompFlower);
+		System.out.println("TotalTime " + playerM.totalTime);
+		System.out.println("TotalTimeFireMode " + playerM.totalTimeFireMode);
+		System.out.println("TotalTimeLargeMode " + playerM.totalTimeLargeMode);
+		System.out.println("TotalTimeLittleMode " + playerM.totalTimeLittleMode);
+		System.out.println("TotalTimeLittleMode " + playerM.timesSwichingPower);
+		System.out.println("CoinsCollected " + playerM.coinsCollected);
 		
+		// BASE DE REGLES
+		setMode(MODERATE);									// Par default
+		if (playerM.timeRunningLeft <= 5)					setMode(SPEED);
+		if (playerM.totalTime <= 50)						setMode(SPEED);
+		else if (playerM.totalTime >= 150)					setMode(EASY);
+		if (playerM.timesSwichingPower > 3)					setMode(EASY);
+		if (playerM.timesOfDeathByGoomba > 0)				setMode(EASY);
+		if (playerM.enemyKillByKickingShell > 5
+			&&
+			playerM.completionTime <= 100
+			&& 
+			playerM.completionTime == playerM.totalTime)	setMode(HARD);			
+		if (playerM.percentageCoinBlocksDestroyed >= 0.2) 	setMode(COLLECTOR);
+		if (playerM.coinsCollected >= 20) 					setMode(COLLECTOR);
+		if (playerM.percentageBlocksDestroyed >= 0.2)		setMode(BLOCK_LOVER);
+	}
+	
+	private void setMode(int mode) {
+		if (mode == EASY) {
+			System.out.println("EASY MODE");
+			CHANCE_ENEMY = 0.15;
+			CHANCE_WINGED = 0.01;
+			CHANCE_ARMOREDTURTLE = 0;
+			CHANCE_JUMPFLOWER = 0;
+			CHANCE_CHOMPFLOWER = 0;
+			CHANCE_BLOCK_POWER_UP = 0.1;
+		} else if (mode == MODERATE) {
+			System.out.println("MODERATE MODE");
+			CHANCE_ENEMY = 0.25;
+			CHANCE_WINGED = 0.05;
+			CHANCE_ARMOREDTURTLE = 0.3;
+			CHANCE_JUMPFLOWER = 0.1;
+			CHANCE_CHOMPFLOWER = 0.1;
+			CHANCE_BLOCK_POWER_UP = 0.05;
+		} else if (mode == HARD) {
+			System.out.println("HARD MODE");
+			CHANCE_ENEMY = 0.35;
+			CHANCE_WINGED = 0.2;
+			CHANCE_ARMOREDTURTLE = 0.5;
+			CHANCE_JUMPFLOWER = 0.5;
+			CHANCE_CHOMPFLOWER = 0.5;
+			CHANCE_BLOCK_POWER_UP = 0.05;
+		} else if (mode == SPEED) {
+			System.out.println("SPEED MODE");
+			CHANCE_HILL = 0.06;
+			GROUND_OFFSET = 4;
+			HILL_OFFSET = 5;
+			GAP_OFFSET = 3;
+			CHANCE_BLOCK = 0.05;
+		} else if (mode == COLLECTOR) {
+			System.out.println("COLLECTOR MODE");
+			CHANCE_BLOCK_COIN = 0.5;
+			CHANCE_END_COIN = 0.125;
+			CHANCE_COIN = 0.1;
+		} else if (mode == BLOCK_LOVER) {
+			System.out.println("BLOCK_LOVER MODE");
+			CHANCE_BLOCK = 0.2;
+			CHANCE_BLOCK_POWER_UP = 0.1;
+			CHANCE_BLOCK_COIN = 0.5;
+		} 
 	}
 	
 	public void createLevel() {
-        buildPhase1();	// Placer des sols
-        buildPhase2();	// Placer des sols supplementaires plus haut
-        buildPhase3();	// Ajouter des tubes
-        buildPhase4();	// Ajouter des bloques
-        buildPhase5();	// Ajouter des enemies
-        buildPhase6();	// Ajouter des pieces
+        buildPhase1();						// Placer des sols
+        if (type == 0) 	buildPhase2_Hill();	// Placer des sols supplementaires plus haut (pour theme 0), et des pierres (pour theme 1 et 2)
+        else 			buildPhase2_Rock();
+        buildPhase3();						// Ajouter des tubes
+        buildPhase4();						// Ajouter des bloques
+        buildPhase5();						// Ajouter des enemies
+        buildPhase6();						// Ajouter des pieces
         
         /*************************/
         /* LES CODES PAR DEFAULT */
@@ -99,10 +191,19 @@ public class CustomizedLevelIAJV extends Level implements LevelInterface {
             int ceiling = 0;
             int run = 0;
             for (int x = 0; x < width; x++) {
-                if (run-- <= 0 && x > 4) {
-                    ceiling = random.nextInt(4);
+            	int max = 0; 
+    			for (max = 0; max < height; max++) {		// Trouver l'objet le plus haut
+    				int tile = getBlock(x, max);
+    				if (tile != 0) {
+    					break;
+    				}				
+    			}
+    			
+                if (run-- <= 0 && x > 3) {
+                    ceiling = Math.min(Math.max(max - 4, 0), random.nextInt(3));
                     run = random.nextInt(4) + 4;
                 }
+                
                 for (int y = 0; y < height; y++) {
                     if ((x > 4 && y <= ceiling) || x < 1) {
                         setBlock(x, y, GROUND);
@@ -174,7 +275,7 @@ public class CustomizedLevelIAJV extends Level implements LevelInterface {
 	/**
 	 * Placer les sols supplementaires plus haut
 	 */
-	private void buildPhase2() {
+	private void buildPhase2_Hill() {
 		int y = height;
 		int lastFloor;
 		int floor = height;
@@ -222,6 +323,48 @@ public class CustomizedLevelIAJV extends Level implements LevelInterface {
 		}
 	}
 	
+	private void buildPhase2_Rock() {
+		int lastFloor;
+		int floor = height;
+		int stairsHeight = 0;
+		int count;
+		boolean hasStairs = false;
+		for (int x = minX + 5; x < maxX; x++) {
+			lastFloor = floor;
+			floor = ground.get(x);
+			if (lastFloor != height && floor == height) {
+				hasStairs = random.nextInt(3) == 0;
+				if (hasStairs) {
+					stairsHeight = random.nextInt(2) + 1;
+					count = 0;
+					for (int xo = x - 1; xo >= x - stairsHeight; xo--) {
+						lastFloor = ground.get(xo);
+						for (int yo = lastFloor - 1; yo >= lastFloor - stairsHeight + count; yo--) {
+							if (getBlock(xo, yo) == 0) { 
+								setBlock(xo, yo, ROCK);
+							}
+						}
+						count++;
+					}
+				}
+			} else if (lastFloor == height && floor != height) {
+				if (hasStairs) {
+					count = 0;
+					for (int xo = x; xo < x + stairsHeight; xo++) {
+						lastFloor = ground.get(xo);
+						for (int yo = lastFloor - 1; yo >= lastFloor - stairsHeight + count; yo--) {
+							if (getBlock(xo, yo) == 0) { 
+								setBlock(xo, yo, ROCK);
+							}
+						}
+						count++;
+					}
+				}
+			}
+		}
+	}
+	
+	
 	/**
 	 * Ajouter les tubes
 	 */
@@ -241,6 +384,12 @@ public class CustomizedLevelIAJV extends Level implements LevelInterface {
 					setBlock(x, floor - 2, Level.TUBE_TOP_LEFT);
 					setBlock(x, floor - 1, Level.TUBE_SIDE_LEFT);		
 					isTube = true;
+					
+					if (random.nextDouble() < CHANCE_JUMPFLOWER) {
+						setSpriteTemplate(x, floor - 2, new SpriteTemplate(Enemy.ENEMY_FLOWER, false));
+					} else if (random.nextDouble() < CHANCE_CHOMPFLOWER) {
+						setSpriteTemplate(x, floor - 2, new SpriteTemplate(SpriteTemplate.CHOMP_FLOWER, false));
+					}
 				}				
 			} 
 		}
@@ -266,13 +415,12 @@ public class CustomizedLevelIAJV extends Level implements LevelInterface {
 			
 			if (y == height) {						
 				if (x > minX && random.nextDouble() < CHANCE_BLOCK) { 		// Commencer 
-					y  = max - BLOCK_OFFSET;
-					
-					if (floor - max > 1) 		placeBlock(x, y);
-					else						y = height;
+					if (floor - max >= 2 + BLOCK_OFFSET || floor == max)	
+						y  = floor - BLOCK_OFFSET;
+					placeBlock(x, y);
 				}
 			} else {
-				if (y >= max - 1 || random.nextDouble() < CHANCE_END_BLOCK) 		y = height;
+				if (y >= max - 2 || random.nextDouble() < CHANCE_END_BLOCK) 		y = height;
 				else																placeBlock(x, y);
 			}
 		}
@@ -297,7 +445,7 @@ public class CustomizedLevelIAJV extends Level implements LevelInterface {
 				}
 				
 				boolean winged = random.nextDouble() < CHANCE_WINGED;
-				int t = (int)(random.nextInt(6));
+				int t = (int)(random.nextInt(7));
 
 				if (t == SpriteTemplate.GREEN_TURTLE || t == SpriteTemplate.RED_TURTLE) {				
 					if (turtleCount < Constraints.turtels) {
@@ -306,7 +454,7 @@ public class CustomizedLevelIAJV extends Level implements LevelInterface {
 						t = SpriteTemplate.GOOMPA;
 					}
 				} else if (t == SpriteTemplate.ARMORED_TURTLE) {
-					if (random.nextInt(2) == 1)		t = SpriteTemplate.GOOMPA;
+					if (random.nextDouble() > CHANCE_ARMOREDTURTLE)	t = SpriteTemplate.GOOMPA;
 				} else {
 					t = SpriteTemplate.GOOMPA;
 				}
