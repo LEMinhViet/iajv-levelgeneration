@@ -12,33 +12,33 @@ import dk.itu.mario.level.Level;
 
 public class CustomizedLevelIAJV extends Level implements LevelInterface {
 	
-	private double CHANCE_GAP = 0.05;
-	private double CHANCE_HILL = 0.03;
-	private double CHANCE_END_HILL = 0.15;
-	private double CHANCE_HEIGHT_CHANGE = 0.1;
-	private double CHANCE_PIPE = 0.05;
-	private double CHANCE_ENEMY = 0.15;
-	private double CHANCE_WINGED = 0.05;
-	private double CHANCE_ARMOREDTURTLE = 0.3;
-	private double CHANCE_JUMPFLOWER = 0;
-	private double CHANCE_CHOMPFLOWER = 0;
-	private double CHANCE_BLOCK = 0.1;
-	private double CHANCE_END_BLOCK = 0.2;
-	private double CHANCE_COIN = 0.05;
-	private double CHANCE_END_COIN = 0.25;
-	private double CHANCE_BLOCK_POWER_UP = 0.05;
-	private double CHANCE_BLOCK_COIN = 0.2;
+	protected double CHANCE_GAP = 0.05;
+	protected double CHANCE_HILL = 0.03;
+	protected double CHANCE_END_HILL = 0.15;
+	protected double CHANCE_HEIGHT_CHANGE = 0.1;
+	protected double CHANCE_PIPE = 0.05;
+	protected double CHANCE_ENEMY = 0.15;
+	protected double CHANCE_WINGED = 0.05;
+	protected double CHANCE_ARMOREDTURTLE = 0.3;
+	protected double CHANCE_JUMPFLOWER = 0;
+	protected double CHANCE_CHOMPFLOWER = 0;
+	protected double CHANCE_BLOCK = 0.1;
+	protected double CHANCE_END_BLOCK = 0.2;
+	protected double CHANCE_COIN = 0.05;
+	protected double CHANCE_END_COIN = 0.25;
+	protected double CHANCE_BLOCK_POWER_UP = 0.05;
+	protected double CHANCE_BLOCK_COIN = 0.2;
 	 
-	private int GROUND_MAX_HEIGHT = 9;
-	private int GROUND_MIN_LENGTH = 3;
-	private int GROUND_OFFSET = 5;
-	private int GAP_MAX_LENGTH = 5;
-	private double GAP_OFFSET = 4;
-	private double HILL_MAX_HEIGHT = 5;	 
-	private double HILL_OFFSET = 6;	 
-	private int HILL_MIN_LENGTH = 3;
-	private int COIN_OFFSET = 4;
-	private int BLOCK_OFFSET = 4;
+	protected int GROUND_MAX_HEIGHT = 9;
+	protected int GROUND_MIN_LENGTH = 3;
+	protected int GROUND_OFFSET = 5;
+	protected int GAP_MAX_LENGTH = 5;
+	protected double GAP_OFFSET = 4;
+	protected double HILL_MAX_HEIGHT = 5;	 
+	protected double HILL_OFFSET = 6;	 
+	protected int HILL_MIN_LENGTH = 3;
+	protected int COIN_OFFSET = 4;
+	protected int BLOCK_OFFSET = 4;
 	
 	private int EASY = 0;
 	private int MODERATE = 1;
@@ -76,7 +76,7 @@ public class CustomizedLevelIAJV extends Level implements LevelInterface {
 
 		random = new Random(seed);        
         
-        configureParameters();
+        configureParameters(playerMetrics);
         
         // keeps track of the ground height
         ground = new ArrayList<Integer>();
@@ -90,7 +90,7 @@ public class CustomizedLevelIAJV extends Level implements LevelInterface {
 		createLevel();
 	}
 	
-	public void configureParameters() {
+	public void configureParameters(GamePlay playerMetrics) {
 		System.out.println("ArmoredTurtlesKilled " + playerM.ArmoredTurtlesKilled);
 		System.out.println("CompletionTime " + playerM.completionTime);
 		System.out.println("CoinBlocksDestroyed " + playerM.coinBlocksDestroyed);
@@ -521,7 +521,7 @@ public class CustomizedLevelIAJV extends Level implements LevelInterface {
 	}
 	
 	/**
-	 * Generer les graphiques à partir de la carte qu'on a généré
+	 * Generer les graphiques ï¿½ partir de la carte qu'on a gï¿½nï¿½rï¿½
 	 */
 	private void fixWalls() {
         boolean[][] blockMap = new boolean[width + 1][height + 1];
@@ -543,7 +543,7 @@ public class CustomizedLevelIAJV extends Level implements LevelInterface {
     }
 
 	/**
-	 * Generer les graphiques à partir de la carte qu'on a généré
+	 * Generer les graphiques ï¿½ partir de la carte qu'on a gï¿½nï¿½rï¿½
 	 */
     private void blockify(Level level, boolean[][] blocks, int width,
                           int height) {

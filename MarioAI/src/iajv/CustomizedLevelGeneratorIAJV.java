@@ -8,7 +8,8 @@ import dk.itu.mario.MarioInterface.LevelInterface;
 
 public class CustomizedLevelGeneratorIAJV implements LevelGenerator {
 	public LevelInterface generateLevel(GamePlay playerMetrics) {
-		LevelInterface level = new CustomizedLevelIAJV(320,15,new Random().nextLong(),1,0,playerMetrics);
+		//LevelInterface level = new CustomizedLevelIAJV(320,15,new Random().nextLong(),1,0,playerMetrics);
+		LevelInterface level = new CustomizedLevelIAJV2(320,15,new Random().nextLong(),1,0,playerMetrics);
 		return level;
 	}
 
