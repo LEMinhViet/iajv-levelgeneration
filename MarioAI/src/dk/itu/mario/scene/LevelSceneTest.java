@@ -1,6 +1,5 @@
 package dk.itu.mario.scene;
 import iajv.CustomizedLevelGeneratorIAJV;
-import iajv.CustomizedLevelGeneratorWeber;
 
 import java.awt.GraphicsConfiguration;
 import java.io.DataInputStream;

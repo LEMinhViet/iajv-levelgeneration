@@ -12,33 +12,33 @@ import dk.itu.mario.level.Level;
 
 public class CustomizedLevelIAJV extends Level implements LevelInterface {
 	
-	protected double CHANCE_GAP = 0.05;
-	protected double CHANCE_HILL = 0.03;
-	protected double CHANCE_END_HILL = 0.15;
-	protected double CHANCE_HEIGHT_CHANGE = 0.1;
-	protected double CHANCE_PIPE = 0.05;
-	protected double CHANCE_ENEMY = 0.15;
-	protected double CHANCE_WINGED = 0.05;
-	protected double CHANCE_ARMOREDTURTLE = 0.3;
-	protected double CHANCE_JUMPFLOWER = 0;
-	protected double CHANCE_CHOMPFLOWER = 0;
-	protected double CHANCE_BLOCK = 0.1;
-	protected double CHANCE_END_BLOCK = 0.2;
-	protected double CHANCE_COIN = 0.05;
-	protected double CHANCE_END_COIN = 0.25;
-	protected double CHANCE_BLOCK_POWER_UP = 0.05;
-	protected double CHANCE_BLOCK_COIN = 0.2;
+	protected double CHANCE_GAP = 0.05;				// La possibilité d'avoir un lacune
+	protected double CHANCE_HILL = 0.03;			// La possibilité de commencer à abjouter un sols supplémentaire
+	protected double CHANCE_END_HILL = 0.15;		// La possibilité de finir à abjouter un sols supplémentaire
+	protected double CHANCE_HEIGHT_CHANGE = 0.1;	// La possibilité de changer l'hauteur du sols
+	protected double CHANCE_PIPE = 0.05;			// La possibilité de placer un tube
+	protected double CHANCE_ENEMY = 0.15;			// La possibilité de placer un ennemie
+	protected double CHANCE_WINGED = 0.05;			// La possibilité de placer un ennemie avec l'aile
+	protected double CHANCE_ARMOREDTURTLE = 0.3;	// La possibilité de placer un ennemie de type AMOREDTURTLE
+	protected double CHANCE_JUMPFLOWER = 0;			// La possibilité de placer un ennemie de type JUMPFLOWER
+	protected double CHANCE_CHOMPFLOWER = 0;		// La possibilité de placer un ennemie de type CHOMPFLOWER
+	protected double CHANCE_BLOCK = 0.1;			// La possibilité de commencer à placer une liste de blocs
+	protected double CHANCE_END_BLOCK = 0.2;		// La possibilité de finir à placer une liste de blocs
+	protected double CHANCE_COIN = 0.05;			// La possibilité de commencer à placer une liste de pieces
+	protected double CHANCE_END_COIN = 0.25;		// La possibilité de finir à placer une liste de pieces
+	protected double CHANCE_BLOCK_POWER_UP = 0.05;	// La possibilité de placer un bloc avec le 'power up'
+	protected double CHANCE_BLOCK_COIN = 0.2;		// La possibilité de placer un bloc avec le pièce
 	 
-	protected int GROUND_MAX_HEIGHT = 9;
-	protected int GROUND_MIN_LENGTH = 3;
-	protected int GROUND_OFFSET = 5;
-	protected int GAP_MAX_LENGTH = 5;
-	protected double GAP_OFFSET = 4;
-	protected double HILL_MAX_HEIGHT = 5;	 
-	protected double HILL_OFFSET = 6;	 
-	protected int HILL_MIN_LENGTH = 3;
-	protected int COIN_OFFSET = 4;
-	protected int BLOCK_OFFSET = 4;
+	protected int GROUND_MAX_HEIGHT = 9;			// La hauteur maximale
+	protected int GROUND_MIN_LENGTH = 3;			// La taille minimale des sols avant avoir un lacune
+	protected int GROUND_OFFSET = 5;				// La changement maximale du hauteur pour que les joueurs peuvent passer
+	protected int GAP_MAX_LENGTH = 5;				// La taille maximale d'un lacune
+	protected double GAP_OFFSET = 4;				// La changement maximale du hauteur de sols avant et après un lacune
+	protected double HILL_MAX_HEIGHT = 5;	 		// La hauteur maximale d'une colline 
+	protected double HILL_OFFSET = 6;	 			// La distance maximale de le hauteu d'une colline avec le sols
+	protected int HILL_MIN_LENGTH = 3;				// La taille minimal d'une colline 
+	protected int COIN_OFFSET = 4;					// La distance des pièces avec le sols
+	protected int BLOCK_OFFSET = 4;					// La distance des blocs avec le sols
 	
 	private int EASY = 0;
 	private int MODERATE = 1;
@@ -129,6 +129,7 @@ public class CustomizedLevelIAJV extends Level implements LevelInterface {
 		if (playerM.percentageCoinBlocksDestroyed >= 0.2) 	setMode(COLLECTOR);
 		if (playerM.coinsCollected >= 20) 					setMode(COLLECTOR);
 		if (playerM.percentageBlocksDestroyed >= 0.2)		setMode(BLOCK_LOVER);
+		setMode(HARD);
 	}
 	
 	private void setMode(int mode) {

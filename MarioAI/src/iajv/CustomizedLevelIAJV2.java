@@ -37,17 +37,17 @@ public class CustomizedLevelIAJV2 extends CustomizedLevelIAJV {
 
 		DenseVector entree = new DenseVector(12 +1);
 		entree.setValue(i++, playerM.aimlessJumps);
-		entree.setValue(i++, playerM.timeSpentRunning / playerM.completionTime);
-		entree.setValue(i++, playerM.coinsCollected / playerM.totalCoins);
+		entree.setValue(i++, (float)playerM.timeSpentRunning / playerM.completionTime);
+		entree.setValue(i++, (float)playerM.coinsCollected / playerM.totalCoins);
 		entree.setValue(i++, playerM.percentageCoinBlocksDestroyed);
 		entree.setValue(i++, playerM.percentageEmptyBlockesDestroyed);
 		entree.setValue(i++, playerM.percentagePowerBlockDestroyed);
 		entree.setValue(i++, playerM.timesOfDeathByFallingIntoGap);
-		entree.setValue(i++, playerM.enemyKillByFire / playerM.totalEnemies);
-		entree.setValue(i++, playerM.enemyKillByKickingShell / playerM.totalEnemies);
-		entree.setValue(i++, playerM.totalTimeLittleMode / playerM.completionTime);
-		entree.setValue(i++, playerM.totalTimeLargeMode / playerM.completionTime);
-		entree.setValue(i++, playerM.totalTimeFireMode / playerM.completionTime);
+		entree.setValue(i++, (float)playerM.enemyKillByFire / playerM.totalEnemies);
+		entree.setValue(i++, (float)playerM.enemyKillByKickingShell / playerM.totalEnemies);
+		entree.setValue(i++, (float)playerM.totalTimeLittleMode / playerM.completionTime);
+		entree.setValue(i++, (float)playerM.totalTimeLargeMode / playerM.completionTime);
+		entree.setValue(i++, (float)playerM.totalTimeFireMode / playerM.completionTime);
 		entree.setValue(i++, 1);
 
 		DenseVector parametres = p.getOutput(entree);
