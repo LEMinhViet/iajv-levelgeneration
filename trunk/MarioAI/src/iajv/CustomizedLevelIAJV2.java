@@ -83,11 +83,11 @@ public class CustomizedLevelIAJV2 extends CustomizedLevelIAJV {
 		p = new MLP();
 		p.setLoss(new SquareLoss(16));
 		LinearModule c = new LinearModule(13, nb_neurone);
-		c.randomize(0.0025);
+		c.randomize(0.000025);
 		p.addModule(c);
 		p.addModule(new TanHModule(nb_neurone));
 		c = new LinearModule(nb_neurone, 16);
-		c.randomize(0.0025);
+		c.randomize(0.000025);
 		p.addModule(c);
 		p.addModule(new TanHModule(16));
 
@@ -95,21 +95,21 @@ public class CustomizedLevelIAJV2 extends CustomizedLevelIAJV {
 			ExampleSet training_set = new ExampleSet("trace", "parametres");
 			// Apprentissage
 
-			double lerr = 0, err = 1;
+			double lerr = 1, err = 0;
 			int iteration = 0;
 			while (true) {
-				if (iteration % 40 == 0) {
+				if (iteration % 1000 == 0) {
 					err = p.computeError(training_set);
 					System.out.println(iteration + " " + err);
-					if (Math.abs(err - lerr) < 0.0001)
+					if (iteration % 1000000 == 0 && Math.abs(err - lerr) < 0.0000001)
 						break;
 					lerr = err;
 				}
 
-				for (int i = 0; i < training_set.size(); i++) {
+				//for (int i = 0; i < training_set.size(); i++) {
 					int idx = (int) (Math.random() * training_set.size());
-					p.stochasticGradientStep(0.01, training_set.getInput(idx), training_set.getOutput(idx));
-				}
+					p.stochasticGradientStep(0.00001, training_set.getInput(idx), training_set.getOutput(idx));
+				//}
 				iteration++;
 			}
 		} catch (Exception e) {
